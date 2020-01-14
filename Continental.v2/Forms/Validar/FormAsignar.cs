@@ -1,5 +1,6 @@
 ﻿using Continental.v2.Business;
 using Newtonsoft.Json;
+using Oracle.ManagedDataAccess.Client;
 using Repositories.ViewModels;
 using ReposotoriesCUPS.Data;
 using ReposotoriesCUPS.ViewModels;
@@ -64,6 +65,7 @@ namespace Continental.v2.Forms.Validar
             //
 
             OrderVModel order = new OrderVModel();
+            int palletBox = 0;
             if (BusinessOrders.Terminado(txbEmbarque.Text))
             {
                 MessageBox.Show("El embarque ya esta terminado");
@@ -73,7 +75,7 @@ namespace Continental.v2.Forms.Validar
             {
                 _embarque = txbEmbarque.Text;
                 order = BusinessOrders.GetOrder(_embarque);
-                
+
                 FormValidar fv = FormValidar.GetInstance(_embarque, (int)order.ReaderID);
                 if (!fv.IsDisposed)
                 {
@@ -81,7 +83,7 @@ namespace Continental.v2.Forms.Validar
                     fv.Show();
                     fv.BringToFront();
                 }
-                
+
             }
             else if (BusinessOrders.ExisteNoAsignada(txbEmbarque.Text))
             {
@@ -123,7 +125,7 @@ namespace Continental.v2.Forms.Validar
 
                 if (embarque.detalle.Count > 0)
                 {
-                    int piezasPorTarima = 300;
+                    //int piezasPorTarima = 300;
                     // se llena el combobox con los andenes
                     LlenarComboAnden();
                     // Preguntas si esta cancelado
@@ -133,20 +135,45 @@ namespace Continental.v2.Forms.Validar
                         int index = 0;
                         foreach (OrderDetailVModel item in embarque.detalle)
                         {
-                            if (int.Parse(item.cantidad) <= piezasPorTarima)
+                            if (item.continentalpartnumber.ToLower() == "varios")
                             {
                                 item.total_pallets = 1;
                             }
                             else
                             {
-                                //int pallets = int.Parse(item.cantidad) / piezasPorTarima;
-                                //if (pallets == 0)
-                                //    txbEmbarque.Text = string.Empty;
-                                //item.total_pallets = pallets;
-                                int pallets = int.Parse(item.cantidad) / piezasPorTarima;
-                                item.total_pallets = pallets;
-                            }
+                                #region Connection Traza
+                                string oracleConn = "Data Source= tqdb002x.tq.mx.conti.de:1521/tqtrazapdb.tq.mx.conti.de; User Id=consulta; Password= solover";
+                                string query = $"SELECT aunitsperbox * aboxperpallet FROM ETGDL.products WHERE MLFB = '{item.continentalpartnumber}' ";
+                                using (OracleConnection connection = new OracleConnection(oracleConn))
+                                {
+                                    OracleCommand command = new OracleCommand(query, connection);
+                                    connection.Open();
+                                    OracleDataReader reader = command.ExecuteReader();
 
+                                    if (reader.Read())
+                                    {
+                                        palletBox = reader.GetInt32(0);
+                                    }
+
+                                    reader.Close();
+                                }
+
+                                #endregion
+                                if (int.Parse(item.cantidad) <= palletBox)
+                                {
+                                    item.total_pallets = 1;
+                                }
+                                else
+                                {
+                                    //int pallets = int.Parse(item.cantidad) / piezasPorTarima;
+                                    //if (pallets == 0)
+                                    //    txbEmbarque.Text = string.Empty;
+                                    //item.total_pallets = pallets;
+                                    int pallets = int.Parse(item.cantidad) / palletBox;
+                                    item.total_pallets = pallets;
+                                }
+
+                            }
                             index++;
                         }
                         var orderT = BusinessOrders.CreateNuevaOrden(embarque);
@@ -182,10 +209,14 @@ namespace Continental.v2.Forms.Validar
                 // TODO-3: Abrir el form que validará las tarimas
                 MessageBox.Show("Se inició el embarque");
                 _embarque = txbEmbarque.Text;
-                this.Hide();
+
                 FormValidar fv = FormValidar.GetInstance(_embarque, anden.ReaderID);
-                fv.Show();
-                fv.BringToFront();
+                if (!fv.IsDisposed)
+                {
+                    this.Hide();
+                    fv.Show();
+                    fv.BringToFront();
+                }
             }
             else
                 MessageBox.Show("No fué posible iniciar el embarque");
@@ -436,4 +467,3 @@ namespace Continental.v2.Forms.Validar
         }
     }
 }
-

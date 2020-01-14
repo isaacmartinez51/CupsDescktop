@@ -79,6 +79,7 @@
     <Compile Include="Business\BusinessOrders.cs" />
     <Compile Include="Classes\ConnectionTraza.cs" />
     <Compile Include="Classes\EpcConvertHexAsc.cs" />
+    <Compile Include="Classes\Exceptions\DataValidationException.cs" />
     <Compile Include="Classes\RawPrinterHelper.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
