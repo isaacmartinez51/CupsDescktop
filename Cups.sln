@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29609.76
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Continental.v2", "Continental.v2\Continental.v2.csproj", "{BBA22930-BB28-43DD-ACF6-D9C399F61148}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReposotoriesCUPS", "ReposotoriesCUPS\ReposotoriesCUPS.csproj", "{CFDE16F2-32E6-49EF-9B2B-FB6E924CF132}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BBA22930-BB28-43DD-ACF6-D9C399F61148}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBA22930-BB28-43DD-ACF6-D9C399F61148}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBA22930-BB28-43DD-ACF6-D9C399F61148}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBA22930-BB28-43DD-ACF6-D9C399F61148}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFDE16F2-32E6-49EF-9B2B-FB6E924CF132}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFDE16F2-32E6-49EF-9B2B-FB6E924CF132}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFDE16F2-32E6-49EF-9B2B-FB6E924CF132}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFDE16F2-32E6-49EF-9B2B-FB6E924CF132}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FBC6DA35-164B-42F3-8E62-F4AB8BB9DF03}
+	EndGlobalSection
+EndGlobal

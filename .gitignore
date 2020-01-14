@@ -1,0 +1,17 @@
+
+
+dist/
+
+node_modules/
+
+.vs/
+
+Continental.v2/bin
+
+Continental.v2/obj
+
+packages/
+
+ReposotoriesCUPS/bin
+
+ReposotoriesCUPS/obj
