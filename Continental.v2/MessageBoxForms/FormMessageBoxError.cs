@@ -12,9 +12,17 @@ namespace Continental.v2.MessageBoxForms
 {
     public partial class FormMessageBoxError : Form
     {
-        public FormMessageBoxError()
+        public FormMessageBoxError(string mensaje)
         {
             InitializeComponent();
+            lblMensaje.Text = mensaje;
+        }
+
+      
+
+        private void btnContinuar_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
         }
     }
 }

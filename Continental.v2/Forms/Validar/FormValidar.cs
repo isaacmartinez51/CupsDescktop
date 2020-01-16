@@ -51,7 +51,7 @@ namespace Continental.v2.Forms.Validar
             reader = new ImpinjReader();
             iniciar();
             LlenarDgv();
-            IniciarReader();
+            IniciarReader(_embarque, _anden);
         }
         #endregion
 
@@ -71,11 +71,12 @@ namespace Continental.v2.Forms.Validar
             }
         }
 
-        private void IniciarReader()// string embarque
+        private void IniciarReader(string embarque, int anden)// string embarque
         {
+            ReaderEModel reader = new ReaderEModel();
             try
             {
-                var reader = GetAnden(_anden);
+                reader = GetAnden(anden);
                 Reader(reader.IpAddress);
             }
             catch (Exception ex)
@@ -99,21 +100,25 @@ namespace Continental.v2.Forms.Validar
             try
             {
                 string ipReader = ipAnden;
-                reader.Connect(ipReader);
 
-                Settings settings = reader.QueryDefaultSettings();
-                settings.Report.IncludeAntennaPortNumber = true;
-                settings.Session = 2;
-                settings.SearchMode = SearchMode.SingleTarget;
-                settings.Report.IncludeLastSeenTime = true;
-
-                for (ushort a = 1; a <= 4; a++)
+                if (!reader.IsConnected)
                 {
-                    settings.Antennas.GetAntenna(a).TxPowerInDbm = Convert.ToDouble(17);// numericUpDown1.Value
-                    settings.Antennas.GetAntenna(a).RxSensitivityInDbm = -70;
+                    reader.Connect(ipReader);
+
+                    Settings settings = reader.QueryDefaultSettings();
+                    settings.Report.IncludeAntennaPortNumber = true;
+                    settings.Session = 2;
+                    settings.SearchMode = SearchMode.SingleTarget;
+                    settings.Report.IncludeLastSeenTime = true;
+
+                    for (ushort a = 1; a <= 4; a++)
+                    {
+                        settings.Antennas.GetAntenna(a).TxPowerInDbm = Convert.ToDouble(17);// numericUpDown1.Value
+                        settings.Antennas.GetAntenna(a).RxSensitivityInDbm = -70;
+                    }
+                    reader.ApplySettings(settings);
+                    reader.Start();
                 }
-                reader.ApplySettings(settings);
-                reader.Start();
                 reader.TagsReported += new TagsReportedHandler((sReader, report) =>
                 {
                     if (BusinessOrders.EmbarqueVivo2(_embarque))
@@ -124,7 +129,7 @@ namespace Continental.v2.Forms.Validar
 
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 MessageBox.Show("     No fue posible conectar con el reader.    ");
@@ -267,22 +272,9 @@ namespace Continental.v2.Forms.Validar
         private void btnTarimasCargadas_Click(object sender, EventArgs e)
         {
             DgvEmbarque.ClearSelection();
-            //LlenarDgv();
-            //FormListaEmbarque fr = new FormListaEmbarque();
-            //fr.Show();
         }
 
-        private void btnTerminar_Click(object sender, EventArgs e)
-        {
-            string Mensaje = string.Empty;
-            // TODO: Validar si se puede terminar el embarque _embarque
-            if (!BusinessOrders.EmbarqueVivo2(_embarque))
-                Mensaje = BusinessOrders.TerminarEmbarque(_embarque) == 1 ? EmbarqueTerminado : EmbarqueNoTerminado;
-            else
-                Mensaje = EmbarqueIncompleto;
-            MessageBox.Show(Mensaje);
-        }
-
+     
         #region DataGrid
         /// <summary>
         /// Metodo para los nombre de las columnas de la tabla
@@ -303,7 +295,7 @@ namespace Continental.v2.Forms.Validar
             OrderVModel order = new OrderVModel();
             DgvEmbarque.DataSource = null;
             var dt = LlenarTabla();
-            order = BusinessOrders.GetOrdenCompleta("19100165");
+            order = BusinessOrders.GetOrdenCompleta(_embarque);
             foreach (var item in order.ListOrderDetail)
             {
                 dt.Rows.Add(item.continentalpartnumber, item.traza, item.total_pallets, item.Leido);
@@ -424,6 +416,7 @@ namespace Continental.v2.Forms.Validar
                 PictureBoxTerminado(imageHeigtMax, imageWhidtMax, imageMax_x, imageMax_y);
             }
             DeselccionarFila();
+            txbEmbarque.Text = _embarque;
         }
 
         private void btnTermEmb_Click(object sender, EventArgs e)
@@ -431,10 +424,28 @@ namespace Continental.v2.Forms.Validar
             string Mensaje = string.Empty;
             // TODO: Validar si se puede terminar el embarque _embarque
             if (!BusinessOrders.EmbarqueVivo2(_embarque))
+            {
                 Mensaje = BusinessOrders.TerminarEmbarque(_embarque) == 1 ? EmbarqueTerminado : EmbarqueNoTerminado;
+                FormAsignar fa = FormAsignar.GetInstance();
+                if (!fa.IsDisposed)
+                {
+                    if (reader.IsConnected)
+                    {
+                        reader.Stop();
+                        reader.Disconnect();
+                    }
+                    this.Dispose();
+                    fa.Show();
+                    fa.BringToFront();
+
+                }
+            }
             else
                 Mensaje = EmbarqueIncompleto;
             MessageBox.Show(Mensaje);
+
+           
+
         }
     }
     #region Modelos para el tag

@@ -247,7 +247,6 @@
             this.btnTerminar.UseSelectable = true;
             this.btnTerminar.UseStyleColors = true;
             this.btnTerminar.Visible = false;
-            this.btnTerminar.Click += new System.EventHandler(this.btnTerminar_Click);
             // 
             // btnTarimasCargadas
             // 
@@ -455,7 +454,6 @@
             this.txbEmbarque.Name = "txbEmbarque";
             this.txbEmbarque.Size = new System.Drawing.Size(212, 34);
             this.txbEmbarque.TabIndex = 10;
-            this.txbEmbarque.Text = "19100165";
             this.txbEmbarque.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // panelBtnTe

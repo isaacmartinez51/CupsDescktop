@@ -78,6 +78,7 @@
   <ItemGroup>
     <Compile Include="Business\BusinessOrders.cs" />
     <Compile Include="Classes\ConnectionTraza.cs" />
+    <Compile Include="Classes\EnumMessages.cs" />
     <Compile Include="Classes\EpcConvertHexAsc.cs" />
     <Compile Include="Classes\Exceptions\DataValidationException.cs" />
     <Compile Include="Classes\RawPrinterHelper.cs" />
@@ -127,6 +128,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Validar\FormValidar.resx">
       <DependentUpon>FormValidar.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MessageBoxForms\FormMessageBoxError.resx">
+      <DependentUpon>FormMessageBoxError.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

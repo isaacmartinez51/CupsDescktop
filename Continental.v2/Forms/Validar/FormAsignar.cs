@@ -1,5 +1,6 @@
 ﻿using Continental.v2.Business;
 using Continental.v2.Classes.Exceptions;
+using Continental.v2.MessageBoxForms;
 using Newtonsoft.Json;
 using Oracle.ManagedDataAccess.Client;
 using Repositories.ViewModels;
@@ -23,6 +24,7 @@ namespace Continental.v2.Forms.Validar
     {
         private static FormAsignar _instance;
         string _embarque;
+        string embarqueTerminado = "Embarque terminado!";
         public FormAsignar()
         {
             InitializeComponent();
@@ -72,7 +74,8 @@ namespace Continental.v2.Forms.Validar
                 int palletBox = 0;
                 if (BusinessOrders.Terminado(txbEmbarque.Text))
                 {
-                    MessageBox.Show("El embarque ya esta terminado");
+                    //MensajeError(embarqueTerminado);
+                    MessageBox.Show(embarqueTerminado);
                     //TODO: Limpiar el txt donde se escribe el embarque
                 }
                 else if (BusinessOrders.ExisteAsignada(txbEmbarque.Text))
@@ -122,7 +125,7 @@ namespace Continental.v2.Forms.Validar
                         }
                     }
                     else
-                        MessageBox.Show("No fue posible conectar con embarques");
+                        MessageBox.Show("");
                 }
                 else
                 {
@@ -287,9 +290,11 @@ namespace Continental.v2.Forms.Validar
 
         private void Restaurar_Click(object sender, EventArgs e)
         {
+            StartPosition = FormStartPosition.CenterParent;
             WindowState = FormWindowState.Normal;
             Restaurar.Visible = false;
             Maximizar.Visible = true;
+            
         }
 
         private void Minimizar_Click(object sender, EventArgs e)
@@ -327,6 +332,24 @@ namespace Continental.v2.Forms.Validar
             }
             // se llena el combobox con los andenes
             LlenarComboAnden();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void MensajeError(string msj)
+        {
+            DialogResult resultado = new DialogResult();
+            Form mensaje = new FormMessageBoxError(msj);
+
+            resultado = mensaje.ShowDialog();
+            if (resultado == DialogResult.OK)
+            {
+                txbEmbarque.Text = string.Empty;
+                txbEmbarque.Focus();
+            }
         }
     }
 }
